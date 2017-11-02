@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableHighlight,
+  Navigator,
   ScrollView
 } from 'react-native';
 
@@ -21,7 +23,7 @@ export default class App extends Component<{}> {
 
   renderWeather(bgc, fgc, textContent) {
     return (
-  <View style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></View>
+  <TouchableHighlight onPress={ console.log("Button Touched") } style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></TouchableHighlight>
     );
   }
   constructor(props) {
