@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   Platform,
@@ -12,13 +6,6 @@ import {
   View,
   ScrollView
 } from 'react-native';
-
-import DeviceInfo from 'react-native-device-info';
-var uniqueid = DeviceInfo.getUniqueID();
-var manufacturer = DeviceInfo.getManufacturer();
-
-console.log('DEVICE ID: ' + uniqueid);
-console.log('DEVICE Manufacturer: ' + manufacturer);
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -30,37 +17,35 @@ const instructions = Platform.select({
 export default class App extends Component<{}> {
   renderWeather(bgc, fgc, textContent) {
     return (
-	<View style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></View>
+  <View style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></View>
     );
   }
   renderCard(bgc, fgc, textContent) {
     return (
-	<View style={[styles.box, {backgroundColor: bgc}]}><Text style={[styles.boxText, {backgroundColor: fgc}]}>{textContent}</Text></View>
+  <View style={[styles.box, {backgroundColor: bgc}]}><Text style={[styles.boxText, {backgroundColor: fgc}]}>{textContent}</Text></View>
     );
   }
   render() {
     return (
       <ScrollView style={styles.container}>
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Device ID: ' + uniqueid)}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Device Manufacturer: ' + manufacturer)}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 1')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 2')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 3')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
-		{this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
-		{this.renderCard('#003366', '#446699', 'Text Box 2')}
-		{this.renderCard('#330066', '#664499', 'Text Box 3')}
-		{this.renderCard('#336600', '#669944', 'Text Box 4')}
-		{this.renderCard('#660033', '#994466', 'Text Box 5')}
-		{this.renderCard('#663300', '#996644', 'Text Box 6')}
-		{this.renderCard('#006600', '#449944', 'Text Box 1')}
-		{this.renderCard('#003366', '#446699', 'Text Box 2')}
-		{this.renderCard('#330066', '#664499', 'Text Box 3')}
-		{this.renderCard('#336600', '#669944', 'Text Box 4')}
-		{this.renderCard('#660033', '#994466', 'Text Box 5')}
-		{this.renderCard('#663300', '#996644', 'Text Box 6')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 1')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 2')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 3')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
+    {this.renderCard('#003366', '#446699', 'Text Box 2')}
+    {this.renderCard('#330066', '#664499', 'Text Box 3')}
+    {this.renderCard('#336600', '#669944', 'Text Box 4')}
+    {this.renderCard('#660033', '#994466', 'Text Box 5')}
+    {this.renderCard('#663300', '#996644', 'Text Box 6')}
+    {this.renderCard('#006600', '#449944', 'Text Box 1')}
+    {this.renderCard('#003366', '#446699', 'Text Box 2')}
+    {this.renderCard('#330066', '#664499', 'Text Box 3')}
+    {this.renderCard('#336600', '#669944', 'Text Box 4')}
+    {this.renderCard('#660033', '#994466', 'Text Box 5')}
+    {this.renderCard('#663300', '#996644', 'Text Box 6')}
       </ScrollView>
     );
   }

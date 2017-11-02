@@ -1,4 +1,5 @@
 {
-  "name": "NWS",
-  "displayName": "NWS"
+  "expo": {
+    "sdkVersion": "22.0.0"
+  }
 }
