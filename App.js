@@ -49,6 +49,9 @@ export default class App extends Component<{}> {
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 8')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 9')}
+    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 10')}
       </ScrollView>
     );
   }
