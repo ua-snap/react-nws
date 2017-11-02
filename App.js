@@ -20,32 +20,35 @@ export default class App extends Component<{}> {
   <View style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></View>
     );
   }
-  renderCard(bgc, fgc, textContent) {
-    return (
-  <View style={[styles.box, {backgroundColor: bgc}]}><Text style={[styles.boxText, {backgroundColor: fgc}]}>{textContent}</Text></View>
-    );
+  constructor(props) {
+    super(props)
+    this.state = { data: [] }
+  }
+  getData() {
+    return fetch('http://forecast.weather.gov/MapClick.php?lat=64.5394&lon=-165.4643&unit=0&lg=english&FcstType=json&TextType=1')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({data: responseJson.location});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  componentWillMount(){
+    this.getData()
   }
   render() {
+    console.log(this.state.data)
+    var mydata = this.state.data;
     return (
       <ScrollView style={styles.container}>
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 1')}
+    {this.renderWeather('#eeeeee', '#eeeeee', mydata.areaDescription)}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 2')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 3')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
-    {this.renderCard('#003366', '#446699', 'Text Box 2')}
-    {this.renderCard('#330066', '#664499', 'Text Box 3')}
-    {this.renderCard('#336600', '#669944', 'Text Box 4')}
-    {this.renderCard('#660033', '#994466', 'Text Box 5')}
-    {this.renderCard('#663300', '#996644', 'Text Box 6')}
-    {this.renderCard('#006600', '#449944', 'Text Box 1')}
-    {this.renderCard('#003366', '#446699', 'Text Box 2')}
-    {this.renderCard('#330066', '#664499', 'Text Box 3')}
-    {this.renderCard('#336600', '#669944', 'Text Box 4')}
-    {this.renderCard('#660033', '#994466', 'Text Box 5')}
-    {this.renderCard('#663300', '#996644', 'Text Box 6')}
       </ScrollView>
     );
   }
@@ -55,7 +58,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     flexDirection: 'column',
-    //backgroundColor: '#F5FCFF',
     backgroundColor: '#eeeeee',
     overflow: 'hidden',
   },
@@ -71,24 +73,5 @@ const styles = StyleSheet.create({
     padding: '2%',
     textAlign: 'left',
     textAlignVertical: 'top',
-  },
-  box: {
-    marginLeft: '2%',
-    marginRight: '2%',
-    marginTop: '2%',
-    borderRadius: 10,
-  },
-  boxText: {
-    height: 100,
-    marginBottom: 50,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    backgroundColor: '#cccccc',
-    color: '#eeeeee',
-    textShadowColor: '#666666',
-    fontSize: 25,
-    padding: '2%',
-    textAlign: 'center',
-    textAlignVertical: 'center',
   },
 });
