@@ -7,6 +7,8 @@ import {
   ScrollView
 } from 'react-native';
 
+
+
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -14,7 +16,9 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+  var counter = 0;
 export default class App extends Component<{}> {
+
   renderWeather(bgc, fgc, textContent) {
     return (
   <View style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></View>
@@ -22,27 +26,60 @@ export default class App extends Component<{}> {
   }
   constructor(props) {
     super(props)
-    this.state = { data: [] }
+    this.state = { data1: [], data2: [], data3: [] }
   }
-  getData() {
-    return fetch('http://forecast.weather.gov/MapClick.php?lat=64.5394&lon=-165.4643&unit=0&lg=english&FcstType=json&TextType=1')
+  getData1(url) {
+    console.log(counter++);
+    return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({data: responseJson.location});
+        this.setState({data1: responseJson.location});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  getData2(url) {
+    console.log(counter++);
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({data2: responseJson.location});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  getData3(url) {
+    console.log(counter++);
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({data3: responseJson.location});
       })
       .catch((error) => {
         console.error(error);
       });
   }
   componentWillMount(){
-    this.getData()
+    this.getData1('http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1');
+    this.getData2('http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1');
+    this.getData3('http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1');
+	//Kotlik: 63.0337N, 163.5484W
+	//North Mouth-Kotlik: 63.0433N, 163.3699W
+	//Southern Norton Sound-Reindeer Camp: 63.2311N, 162.8866W
+
   }
   render() {
-    console.log(this.state.data)
-    var mydata = this.state.data;
+    var mydata1 = this.state.data1;
+    var mydata2 = this.state.data2;
+    var mydata3 = this.state.data3;
+
     return (
       <ScrollView style={styles.container}>
-    {this.renderWeather('#eeeeee', '#eeeeee', mydata.areaDescription)}
+    {this.renderWeather('#eeeeee', '#eeeeee', mydata1.areaDescription)}
+    {this.renderWeather('#eeeeee', '#eeeeee', mydata2.areaDescription)}
+    {this.renderWeather('#eeeeee', '#eeeeee', mydata3.areaDescription)}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 2')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 3')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
