@@ -5,12 +5,11 @@ import {
   Text,
   View,
   TouchableHighlight,
-  Navigator,
   ScrollView
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
-
-
+ // 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -18,12 +17,26 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-  var counter = 0;
-export default class App extends Component<{}> {
+  
 
+
+//export default class App extends Component<{}> {
+class WeatherScreen extends Component {
+  static navigationOptions = {
+    title: 'WeatherLocation',
+  }
+  render(){ 
+    <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')} ><Text>WeatherLocation</Text></TouchableHighlight>
+  }
+}
+class HomeScreen extends Component {
+  static navigationOptions = {
+    title: 'Home',
+  }
   renderWeather(bgc, fgc, textContent) {
     return (
-  <TouchableHighlight onPress={ console.log("Button Touched") } style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></TouchableHighlight>
+
+  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation') } style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></TouchableHighlight>
     );
   }
   constructor(props) {
@@ -31,7 +44,6 @@ export default class App extends Component<{}> {
     this.state = { data1: [], data2: [], data3: [] }
   }
   getData1(url) {
-    console.log(counter++);
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -42,7 +54,6 @@ export default class App extends Component<{}> {
       });
   }
   getData2(url) {
-    console.log(counter++);
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -53,7 +64,6 @@ export default class App extends Component<{}> {
       });
   }
   getData3(url) {
-    console.log(counter++);
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -82,8 +92,6 @@ export default class App extends Component<{}> {
     {this.renderWeather('#eeeeee', '#eeeeee', mydata1.areaDescription)}
     {this.renderWeather('#eeeeee', '#eeeeee', mydata2.areaDescription)}
     {this.renderWeather('#eeeeee', '#eeeeee', mydata3.areaDescription)}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 2')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 3')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
@@ -117,3 +125,15 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
 });
+
+
+const ModalStack = StackNavigator({
+  Home: {
+    screen: HomeScreen,
+  },
+  WeatherLocation: {
+    screen: WeatherScreen,
+  },
+});
+
+export default ModalStack;
