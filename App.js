@@ -9,23 +9,59 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-//export default class App extends Component<{}> {
 class WeatherScreen extends Component {
   static navigationOptions = {
     title: 'WeatherLocation',
   }
   constructor(props) {
     super(props)
-    this.state = { nwsdata: [] }
-    console.log("logging: " + this.props.navigation.state.params.desc)
+    this.state = {
+      weatherJson: undefined
+    }
   }
+  componentWillMount() {
+    fetch(this.props.navigation.state.params.url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          weatherJson: responseJson
+        });
+      })
+      .catch((error) => {
+        // TODO: put an error capture in here
+      });
+  }
+  render() {
+    // If the data hasn't been loaded yet, show a loading indicator.
+    if (this.state.weatherJson === undefined) {
+      return(
+        <View style={[styles.loading]}>
+          <Text style={[styles.loadingText]}>Loading&hellip;</Text>
+        </View>
+      )
+    }
 
-  render(){
-    var mydata = this.state.nwsdata;
-    return( 
-      <View>
-	<Text>{this.props.navigation.state.params.desc}</Text>
+    // Otherwise, show the weather information!
+    var forecast = this.state.weatherJson.time.startPeriodName.map((time, index) =>
+      <View key={time} style={[styles.forecastBlock]}>
+        <Text style={[styles.timeSpanHeader]}>
+          {time}&nbsp;
+          <Text style={[styles.temperature]}>
+            {this.state.weatherJson.data.temperature[index]}&deg;F
+          </Text>
+        </Text>
+        <View style={[styles.weatherDetailWrapper]}>
+          <Text style={[styles.weatherDetail]}>
+            {this.state.weatherJson.data.text[index]}
+          </Text>
+        </View>
       </View>
+    )
+
+    return(
+      <ScrollView style={[styles.forecastWrapper]}>
+      	{forecast}
+      </ScrollView>
     );
   }
 }
@@ -34,81 +70,79 @@ class HomeScreen extends Component {
   static navigationOptions = {
     title: 'Home',
   }
-  renderWeather(bgc, fgc, loc, locdata) {
-    return (
-
-  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation', { desc: locdata.text })} style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{loc.areaDescription}</Text></TouchableHighlight>
-    );
-  }
   constructor(props) {
     super(props)
-    this.state = { data1: [], data2: [], data3: [], loc1: [], loc2: [], loc3: [] }
-  }
-  getData1(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc1: responseJson.location, data1: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  getData2(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc2: responseJson.location, data2: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  getData3(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc3: responseJson.location, data3: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  componentWillMount(){
-    this.getData1('http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1');
-    this.getData2('http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1');
-    this.getData3('http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1');
-	//Kotlik: 63.0337N, 163.5484W
-	//North Mouth-Kotlik: 63.0433N, 163.3699W
-	//Southern Norton Sound-Reindeer Camp: 63.2311N, 162.8866W
-
+    this.state = {
+      locations: [
+        {
+          name: 'Kotlik',
+          id: 1,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'North Mouth - Kotlik',
+          id: 2,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'Southern Norton Sound - Reindeer Camp',
+          id: 3,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1'
+        }
+      ]
+    }
   }
   render() {
-    var myloc1 = this.state.loc1;
-    var myloc2 = this.state.loc2;
-    var myloc3 = this.state.loc3;
-    var mydata1 = this.state.data1;
-    var mydata2 = this.state.data2;
-    var mydata3 = this.state.data3;
+    // Generate a list of places, with appropriate
+    // click actions mapped.
+    var placeViews = this.state.locations.map((place) =>
+      <TouchableHighlight key={place.id}
+        style={[styles.weatherBox]}
+        onPress={
+          () => this.props.navigation.navigate(
+            'WeatherLocation', { url: place.url }
+          )
+        }
+      >
+        <Text style={[styles.weatherText]}>
+          {place.name}
+        </Text>
+      </TouchableHighlight>
+    )
 
     return (
       <ScrollView style={styles.container}>
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc1, mydata1)}
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc2, mydata2)}
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc3, mydata3)}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 8')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 9')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 10')}
+        {placeViews}
       </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  forecastBlock: {
+    padding: 15
+  },
+  timeSpanHeader: {
+    fontSize: 24
+  },
+  temperature: {
+    color: '#666',
+    fontWeight: 'bold'
+  },
+  weatherDetail: {
+    fontSize: 18
+  },
+  weatherDetailWrapper: {
+    marginTop: 5
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  loadingText: {
+    fontSize: 24,
+    textAlign: 'center'
+  },
   container: {
     height: '100%',
     flexDirection: 'column',
@@ -116,20 +150,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   weatherBox: {
+    justifyContent: 'center',
+    height: 100,
     borderBottomWidth: 1,
-    borderBottomColor: '#333333',
+    borderBottomColor: '#ddd',
   },
   weatherText: {
-    height: 100,
-    color: '#666666',
-    textShadowColor: '#666666',
-    fontSize: 25,
-    padding: '2%',
+    color: '#333',
+    fontSize: 32,
+    padding: 10,
     textAlign: 'left',
-    textAlignVertical: 'top',
-  },
+  }
 });
-
 
 const ModalStack = StackNavigator({
   Home: {
