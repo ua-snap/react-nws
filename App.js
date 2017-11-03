@@ -9,22 +9,52 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-//export default class App extends Component<{}> {
+ // 
+const instructions = Platform.select({
+  ios: 'Press Cmd+R to reload,\n' +
+    'Cmd+D or shake for dev menu',
+  android: 'Double tap R on your keyboard to reload,\n' +
+    'Shake or press menu button for dev menu',
+});
+
+  
+
+
 class WeatherScreen extends Component {
   static navigationOptions = {
     title: 'WeatherLocation',
   }
   constructor(props) {
     super(props)
-    this.state = { nwsdata: [] }
-    console.log("logging: " + this.props.navigation.state.params.desc)
+    this.state = {
+      dataloaded: false,
+      weatherJson: {}
+    }
   }
-
-  render(){
-    var mydata = this.state.nwsdata;
-    return( 
+  componentWillMount() {
+    fetch(this.props.navigation.state.params.url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log('responseJSON is', responseJson)
+        this.setState({
+          weatherJson: responseJson
+        });
+      })
+      .catch((error) => {
+        this.setState(
+          {
+            weatherJson: {
+              message: 'Sorry, an error occurred and weather data could not be loaded.'
+            }
+          }
+        )
+      });
+  }
+  render() {
+    console.log(this.state.weatherJson)
+    return(
       <View>
-	<Text>{this.props.navigation.state.params.desc}</Text>
+      	<Text>What</Text>
       </View>
     );
   }
@@ -34,75 +64,49 @@ class HomeScreen extends Component {
   static navigationOptions = {
     title: 'Home',
   }
-  renderWeather(bgc, fgc, loc, locdata) {
-    return (
-
-  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation', { desc: locdata.text })} style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{loc.areaDescription}</Text></TouchableHighlight>
-    );
-  }
   constructor(props) {
     super(props)
-    this.state = { data1: [], data2: [], data3: [], loc1: [], loc2: [], loc3: [] }
-  }
-  getData1(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc1: responseJson.location, data1: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  getData2(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc2: responseJson.location, data2: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  getData3(url) {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({loc3: responseJson.location, data3: responseJson.data});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  componentWillMount(){
-    this.getData1('http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1');
-    this.getData2('http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1');
-    this.getData3('http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1');
-	//Kotlik: 63.0337N, 163.5484W
-	//North Mouth-Kotlik: 63.0433N, 163.3699W
-	//Southern Norton Sound-Reindeer Camp: 63.2311N, 162.8866W
-
+    this.state = {
+      locations: [
+        {
+          name: 'Kotlik',
+          id: 1,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'North Mouth-Kotlik',
+          id: 2,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'Southern Norton Sound-Reindeer Camp',
+          id: 3,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1'
+        }
+      ]
+    }
   }
   render() {
-    var myloc1 = this.state.loc1;
-    var myloc2 = this.state.loc2;
-    var myloc3 = this.state.loc3;
-    var mydata1 = this.state.data1;
-    var mydata2 = this.state.data2;
-    var mydata3 = this.state.data3;
+    // Generate a list of places, with appropriate
+    // click actions mapped.
+    var placeViews = this.state.locations.map((place) =>
+      <TouchableHighlight key={place.id}
+        style={[styles.weatherBox]}
+        onPress={
+          () => this.props.navigation.navigate(
+            'WeatherLocation', { url: place.url }
+          )
+        }
+      >
+        <Text style={[styles.weatherText]}>
+          {place.name}
+        </Text>
+      </TouchableHighlight>
+    )
 
     return (
       <ScrollView style={styles.container}>
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc1, mydata1)}
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc2, mydata2)}
-    {this.renderWeather('#eeeeee', '#eeeeee', myloc3, mydata3)}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 7')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 8')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 9')}
-    {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 10')}
+        {placeViews}
       </ScrollView>
     );
   }
