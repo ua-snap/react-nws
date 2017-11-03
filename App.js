@@ -5,7 +5,8 @@ import {
   Text,
   View,
   TouchableHighlight,
-  ScrollView
+  ScrollView,
+  Linking
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Moment from 'moment-es6';
@@ -61,10 +62,32 @@ class WeatherScreen extends Component {
 
     var time = Moment().format('MMM D, h:mm a');
 
+    var hazardContent;
+    if (this.state.weatherJson.data.hazard) {
+      var hazards = this.state.weatherJson.data.hazard.map((hazard, index) =>
+        <TouchableHighlight
+          class={[styles.hazardItem]}
+          key={hazard}
+          onPress={
+            () => Linking.openURL(this.state.weatherJson.data.hazardUrl[index]
+            )
+          }
+        >
+          <Text style={[styles.hazardItem]}>
+            {hazard}
+          </Text>
+        </TouchableHighlight>
+      );
+      hazardContent = (
+        <View class={[styles.hazardContent]}>{hazards}</View>
+      );
+    }
+
     return(
       <ScrollView style={[styles.forecastWrapper]}>
         <Text style={[styles.forecastHeader]}>Forecast for {this.props.navigation.state.params.name}</Text>
         <Text style={[styles.forecastTimestamp]}>{time}</Text>
+        {hazardContent}
       	{forecast}
       </ScrollView>
     );
@@ -93,6 +116,16 @@ class HomeScreen extends Component {
           name: 'Southern Norton Sound - Reindeer Camp',
           id: 3,
           url: 'http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'Barrow - Land',
+          id: 4,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=71.20&lon=-156.62&unit=0&lg=english&FcstType=json&TextType=1'
+        },
+        {
+          name: 'Fairbanks - NE Gilmore Trail',
+          id: 5,
+          url: 'http://forecast.weather.gov/MapClick.php?lat=64.9119242766825&lon=-147.56619140624997&unit=0&lg=english&FcstType=json&TextType=1'
         }
       ]
     }
@@ -137,6 +170,17 @@ const styles = StyleSheet.create({
   },
   forecastTimestamp: {
     margin: 10
+  },
+  hazardItem: {
+    padding: 10,
+    backgroundColor: '#ED2500',
+    color: '#fff',
+    fontWeight: 'bold'
+  },
+  hazardContent: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18
   },
   timeSpanHeader: {
     fontSize: 24
