@@ -8,10 +8,11 @@ import {
   ScrollView
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import Moment from 'moment-es6';
 
 class WeatherScreen extends Component {
   static navigationOptions = {
-    title: 'WeatherLocation',
+    title: 'Forecast',
   }
   constructor(props) {
     super(props)
@@ -58,8 +59,12 @@ class WeatherScreen extends Component {
       </View>
     )
 
+    var time = Moment().format('MMM D, h:mm a');
+
     return(
       <ScrollView style={[styles.forecastWrapper]}>
+        <Text style={[styles.forecastHeader]}>Forecast for {this.props.navigation.state.params.name}</Text>
+        <Text style={[styles.forecastTimestamp]}>{time}</Text>
       	{forecast}
       </ScrollView>
     );
@@ -100,7 +105,10 @@ class HomeScreen extends Component {
         style={[styles.weatherBox]}
         onPress={
           () => this.props.navigation.navigate(
-            'WeatherLocation', { url: place.url }
+            'WeatherLocation', {
+              url: place.url,
+              name: place.name
+            }
           )
         }
       >
@@ -121,6 +129,14 @@ class HomeScreen extends Component {
 const styles = StyleSheet.create({
   forecastBlock: {
     padding: 15
+  },
+  forecastHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    margin: 10
+  },
+  forecastTimestamp: {
+    margin: 10
   },
   timeSpanHeader: {
     fontSize: 24
