@@ -75,7 +75,7 @@ class WeatherScreen extends Component {
           }
         >
           <Text style={[styles.hazardItem]}>
-            {hazard}
+            ⚠ {hazard}
           </Text>
         </TouchableHighlight>
       );
