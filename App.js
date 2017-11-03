@@ -25,31 +25,41 @@ class WeatherScreen extends Component {
   static navigationOptions = {
     title: 'WeatherLocation',
   }
+  constructor(props) {
+    super(props)
+    this.state = { nwsdata: [] }
+    console.log("logging: " + this.props.navigation.state.params.desc)
+  }
+
   render(){
+    var mydata = this.state.nwsdata;
     return( 
-      <View><TouchableHighlight onPress={() => this.props.navigation.navigate('Home')} ><Text>Weather Location</Text></TouchableHighlight></View>
+      <View>
+	<Text>{this.props.navigation.state.params.desc}</Text>
+      </View>
     );
   }
 }
+
 class HomeScreen extends Component {
   static navigationOptions = {
     title: 'Home',
   }
-  renderWeather(bgc, fgc, textContent) {
+  renderWeather(bgc, fgc, loc, locdata) {
     return (
 
-  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation') } style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{textContent}</Text></TouchableHighlight>
+  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation', { desc: locdata.text })} style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{loc.areaDescription}</Text></TouchableHighlight>
     );
   }
   constructor(props) {
     super(props)
-    this.state = { data1: [], data2: [], data3: [] }
+    this.state = { data1: [], data2: [], data3: [], loc1: [], loc2: [], loc3: [] }
   }
   getData1(url) {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({data1: responseJson.location});
+        this.setState({loc1: responseJson.location, data1: responseJson.data});
       })
       .catch((error) => {
         console.error(error);
@@ -59,7 +69,7 @@ class HomeScreen extends Component {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({data2: responseJson.location});
+        this.setState({loc2: responseJson.location, data2: responseJson.data});
       })
       .catch((error) => {
         console.error(error);
@@ -69,7 +79,7 @@ class HomeScreen extends Component {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({data3: responseJson.location});
+        this.setState({loc3: responseJson.location, data3: responseJson.data});
       })
       .catch((error) => {
         console.error(error);
@@ -85,15 +95,18 @@ class HomeScreen extends Component {
 
   }
   render() {
+    var myloc1 = this.state.loc1;
+    var myloc2 = this.state.loc2;
+    var myloc3 = this.state.loc3;
     var mydata1 = this.state.data1;
     var mydata2 = this.state.data2;
     var mydata3 = this.state.data3;
 
     return (
       <ScrollView style={styles.container}>
-    {this.renderWeather('#eeeeee', '#eeeeee', mydata1.areaDescription)}
-    {this.renderWeather('#eeeeee', '#eeeeee', mydata2.areaDescription)}
-    {this.renderWeather('#eeeeee', '#eeeeee', mydata3.areaDescription)}
+    {this.renderWeather('#eeeeee', '#eeeeee', myloc1, mydata1)}
+    {this.renderWeather('#eeeeee', '#eeeeee', myloc2, mydata2)}
+    {this.renderWeather('#eeeeee', '#eeeeee', myloc3, mydata3)}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 4')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 5')}
     {this.renderWeather('#eeeeee', '#eeeeee', 'Weather 6')}
