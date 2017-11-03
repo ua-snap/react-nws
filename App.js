@@ -33,9 +33,11 @@ class WeatherScreen extends Component {
 
   render(){
     var mydata = this.state.nwsdata;
+    var len = this.props.navigation.state.params.desc.time.startPeriodName.length;
     return( 
       <View>
-	<Text>{this.props.navigation.state.params.desc}</Text>
+	<Text style={styles.locationTitle}>{this.props.navigation.state.params.desc.time.startPeriodName[0]}</Text>
+        <Text style={styles.locationText}>{this.props.navigation.state.params.desc.data.text[0]}</Text>
       </View>
     );
   }
@@ -48,7 +50,7 @@ class HomeScreen extends Component {
   renderWeather(bgc, fgc, loc, locdata) {
     return (
 
-  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation', { desc: locdata.text })} style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{loc.areaDescription}</Text></TouchableHighlight>
+  <TouchableHighlight onPress={  () => this.props.navigation.navigate('WeatherLocation', { desc: locdata })} style={[styles.weatherBox, {backgroundColor: bgc}]}><Text style={[styles.weatherText, {backgroundColor: fgc}]}>{loc.areaDescription}</Text></TouchableHighlight>
     );
   }
   constructor(props) {
@@ -59,7 +61,7 @@ class HomeScreen extends Component {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({loc1: responseJson.location, data1: responseJson.data});
+        this.setState({loc1: responseJson.location, data1: responseJson});
       })
       .catch((error) => {
         console.error(error);
@@ -69,7 +71,7 @@ class HomeScreen extends Component {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({loc2: responseJson.location, data2: responseJson.data});
+        this.setState({loc2: responseJson.location, data2: responseJson});
       })
       .catch((error) => {
         console.error(error);
@@ -79,7 +81,7 @@ class HomeScreen extends Component {
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({loc3: responseJson.location, data3: responseJson.data});
+        this.setState({loc3: responseJson.location, data3: responseJson});
       })
       .catch((error) => {
         console.error(error);
@@ -139,6 +141,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     textAlignVertical: 'top',
   },
+  locationTitle: {
+    fontSize: 18,
+    margin: '2%',
+  },
+  locationText: {
+    fontSize: 15,
+    margin: '2%',
+  }
 });
 
 
