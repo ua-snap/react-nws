@@ -25,8 +25,10 @@ class WeatherScreen extends Component {
   static navigationOptions = {
     title: 'WeatherLocation',
   }
-  render(){ 
-    <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')} ><Text>WeatherLocation</Text></TouchableHighlight>
+  render(){
+    return( 
+      <View><TouchableHighlight onPress={() => this.props.navigation.navigate('Home')} ><Text>Weather Location</Text></TouchableHighlight></View>
+    );
   }
 }
 class HomeScreen extends Component {
