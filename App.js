@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   weatherBox: {
-    flex: 1,
     justifyContent: 'center',
     height: 100,
     borderBottomWidth: 1,
