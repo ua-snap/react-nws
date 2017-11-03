@@ -64,12 +64,13 @@ class WeatherScreen extends Component {
 
     var hazardContent;
     if (this.state.weatherJson.data.hazard) {
+
       var hazards = this.state.weatherJson.data.hazard.map((hazard, index) =>
         <TouchableHighlight
           class={[styles.hazardItem]}
           key={hazard}
           onPress={
-            () => Linking.openURL(this.state.weatherJson.data.hazardUrl[index]
+            () => Linking.openURL(this.state.weatherJson.data.hazardUrl[index].replace(/&amp;/g,'&')
             )
           }
         >
