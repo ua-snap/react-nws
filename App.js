@@ -9,17 +9,6 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
- // 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-  
-
-
 class WeatherScreen extends Component {
   static navigationOptions = {
     title: 'WeatherLocation',
@@ -27,35 +16,52 @@ class WeatherScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dataloaded: false,
-      weatherJson: {}
+      weatherJson: undefined
     }
   }
   componentWillMount() {
     fetch(this.props.navigation.state.params.url)
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log('responseJSON is', responseJson)
         this.setState({
           weatherJson: responseJson
         });
       })
       .catch((error) => {
-        this.setState(
-          {
-            weatherJson: {
-              message: 'Sorry, an error occurred and weather data could not be loaded.'
-            }
-          }
-        )
+        // TODO: put an error capture in here
       });
   }
   render() {
-    console.log(this.state.weatherJson)
-    return(
-      <View>
-      	<Text>What</Text>
+    // If the data hasn't been loaded yet, show a loading indicator.
+    if (this.state.weatherJson === undefined) {
+      return(
+        <View style={[styles.loading]}>
+          <Text style={[styles.loadingText]}>Loading&hellip;</Text>
+        </View>
+      )
+    }
+
+    // Otherwise, show the weather information!
+    var forecast = this.state.weatherJson.time.startPeriodName.map((time, index) =>
+      <View key={time} style={[styles.forecastBlock]}>
+        <Text style={[styles.timeSpanHeader]}>
+          {time}&nbsp;
+          <Text style={[styles.temperature]}>
+            {this.state.weatherJson.data.temperature[index]}&deg;F
+          </Text>
+        </Text>
+        <View style={[styles.weatherDetailWrapper]}>
+          <Text style={[styles.weatherDetail]}>
+            {this.state.weatherJson.data.text[index]}
+          </Text>
+        </View>
       </View>
+    )
+
+    return(
+      <ScrollView style={[styles.forecastWrapper]}>
+      	{forecast}
+      </ScrollView>
     );
   }
 }
@@ -74,12 +80,12 @@ class HomeScreen extends Component {
           url: 'http://forecast.weather.gov/MapClick.php?lat=63.0337&lon=-163.5484&unit=0&lg=english&FcstType=json&TextType=1'
         },
         {
-          name: 'North Mouth-Kotlik',
+          name: 'North Mouth - Kotlik',
           id: 2,
           url: 'http://forecast.weather.gov/MapClick.php?lat=63.0433&lon=-163.3699&unit=0&lg=english&FcstType=json&TextType=1'
         },
         {
-          name: 'Southern Norton Sound-Reindeer Camp',
+          name: 'Southern Norton Sound - Reindeer Camp',
           id: 3,
           url: 'http://forecast.weather.gov/MapClick.php?lat=63.2311&lon=-162.8866&unit=0&lg=english&FcstType=json&TextType=1'
         }
@@ -113,6 +119,30 @@ class HomeScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  forecastBlock: {
+    padding: 15
+  },
+  timeSpanHeader: {
+    fontSize: 24
+  },
+  temperature: {
+    color: '#666',
+    fontWeight: 'bold'
+  },
+  weatherDetail: {
+    fontSize: 18
+  },
+  weatherDetailWrapper: {
+    marginTop: 5
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  loadingText: {
+    fontSize: 24,
+    textAlign: 'center'
+  },
   container: {
     height: '100%',
     flexDirection: 'column',
@@ -120,20 +150,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   weatherBox: {
+    flex: 1,
+    justifyContent: 'center',
+    height: 100,
     borderBottomWidth: 1,
-    borderBottomColor: '#333333',
+    borderBottomColor: '#ddd',
   },
   weatherText: {
-    height: 100,
-    color: '#666666',
-    textShadowColor: '#666666',
-    fontSize: 25,
-    padding: '2%',
+    color: '#333',
+    fontSize: 32,
+    padding: 10,
     textAlign: 'left',
-    textAlignVertical: 'top',
-  },
+  }
 });
-
 
 const ModalStack = StackNavigator({
   Home: {
